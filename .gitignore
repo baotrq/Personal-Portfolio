@@ -5,3 +5,5 @@ dist/
 *.local
 *.mp4
 *.webp
+graphify-out/
+.claude/

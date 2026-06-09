@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Bao — Robotics & AI Engineer at RMIT Vietnam and VinRobotics. Building intelligent machines at the intersection of AI and physical robotics." />
+  <title>Bao — Robotics & AI Engineer</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Playfair Display', 'Georgia', 'serif'],
+            sans: ['Space Grotesk', 'system-ui', 'sans-serif'],
+            mono: ['DM Mono', 'monospace'],
+          },
+          colors: {
+            accent:       '#E84B2A',
+            'accent-mid': '#F26845',
+            'accent-lit': '#F4906B',
+            dark:         '#0A0A0A',
+            surface:      '#111111',
+            'surf-2':     '#181818',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    ::selection { background: #E84B2A; color: #fff; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: #0A0A0A; }
+    ::-webkit-scrollbar-thumb { background: #E84B2A; border-radius: 3px; }
+
+    /* Custom cursor — desktop only */
+    @media (pointer: fine) {
+      * { cursor: none !important; }
+    }
+    #cur-dot, #cur-ring { position: fixed; pointer-events: none; z-index: 9999; border-radius: 50%; transform: translate(-50%,-50%); }
+    #cur-dot  { width: 8px; height: 8px; background: #E84B2A; transition: transform 0.15s ease, opacity 0.2s; }
+    #cur-ring { width: 38px; height: 38px; border: 1.5px solid rgba(232,75,42,0.5); transition: width 0.25s ease, height 0.25s ease, border-color 0.25s ease; }
+    #cur-dot.grow  { transform: translate(-50%,-50%) scale(4); background: rgba(232,75,42,0.25); }
+    #cur-ring.grow { width: 64px; height: 64px; border-color: rgba(232,75,42,0.2); }
+
+    /* Progress bar */
+    #prog { position: fixed; top: 0; left: 0; height: 2px; width: 0%; background: linear-gradient(90deg, #E84B2A, #F4906B); z-index: 100; pointer-events: none; }
+
+    /* Grain overlay */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1; opacity: 0.5;
+    }
+
+    /* Watermark / oversized bg text */
+    .wm {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255,255,255,0.055);
+      user-select: none; pointer-events: none;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    /* Gradient accent text */
+    .gt {
+      background: linear-gradient(120deg, #E84B2A 0%, #F26845 45%, #FAB08A 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Glass surface */
+    .glass {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    /* Floating nav glass */
+    .nav-glass {
+      background: rgba(10,10,10,0.75);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    /* Tag badge */
+    .badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #E84B2A;
+      background: rgba(232,75,42,0.1);
+      border: 1px solid rgba(232,75,42,0.22);
+      padding: 0.2rem 0.7rem;
+      border-radius: 100px;
+    }
+
+    /* Section label */
+    .sec-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* Grid background */
+    .grid-bg {
+      background-image:
+        linear-gradient(rgba(232,75,42,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(232,75,42,0.025) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500; font-size: 0.9rem;
+      padding: 0.875rem 2rem;
+      border-radius: 100px;
+      transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      white-space: nowrap;
+    }
+    .btn-red  { background: #E84B2A; color: #fff; }
+    .btn-red:hover  { background: #F26845; transform: translateY(-2px); box-shadow: 0 16px 40px rgba(232,75,42,0.35); }
+    .btn-ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.18); }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.55); background: rgba(255,255,255,0.05); transform: translateY(-2px); }
+
+    /* Project card */
+    .proj-card { position: relative; overflow: hidden; border-radius: 20px; transition: transform 0.4s cubic-bezier(0.4,0,0.2,1), box-shadow 0.4s ease; }
+    .proj-card:hover { transform: translateY(-6px); box-shadow: 0 32px 60px rgba(0,0,0,0.6); }
+    .proj-card .thumb { transition: transform 0.6s cubic-bezier(0.4,0,0.2,1); }
+    .proj-card:hover .thumb { transform: scale(1.06); }
+    .proj-card .overlay { background: linear-gradient(to top, rgba(10,10,10,0.97) 0%, rgba(10,10,10,0.5) 50%, transparent 100%); }
+
+    /* Skill bar */
+    .sk-track { height: 1.5px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+    .sk-fill  { height: 100%; background: linear-gradient(90deg, #E84B2A, #F4906B); border-radius: 2px; transform-origin: left; transform: scaleX(0); will-change: transform; }
+
+    /* Service card hover */
+    .svc-card { transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease; }
+    .svc-card:hover { border-color: rgba(232,75,42,0.35) !important; background: rgba(232,75,42,0.04); transform: translateY(-3px); }
+
+    /* Contact input */
+    .ci {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.09);
+      color: #fff;
+      transition: border-color 0.2s;
+    }
+    .ci:focus { outline: none; border-color: #E84B2A; }
+    .ci::placeholder { color: rgba(255,255,255,0.25); }
+
+    /* Scroll indicator dot */
+    .scroll-dot { animation: scrollDot 2.2s ease infinite; }
+    @keyframes scrollDot { 0%,100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(10px); opacity: 0.3; } }
+
+    /* Floating orb */
+    .orb { animation: orbFloat 7s ease-in-out infinite; }
+    @keyframes orbFloat { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(15px,-20px) scale(1.05); } }
+
+    /* Marquee */
+    .marquee-inner { display: flex; gap: 3rem; animation: marquee 22s linear infinite; white-space: nowrap; }
+    .marquee-inner:hover { animation-play-state: paused; }
+    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* Reveal initial states — GSAP will animate these */
+    .rv { opacity: 0; transform: translateY(36px); }
+    .rv-l { opacity: 0; transform: translateX(-36px); }
+    .rv-r { opacity: 0; transform: translateX(36px); }
+
+    /* Reduced motion override */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      .rv, .rv-l, .rv-r { opacity: 1 !important; transform: none !important; }
+      .marquee-inner { animation: none; }
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white font-sans antialiased overflow-x-hidden">
+
+  <!-- Progress bar -->
+  <div id="prog"></div>
+
+  <!-- Custom cursor (hidden on touch) -->
+  <div id="cur-dot"></div>
+  <div id="cur-ring"></div>
+
+  <!-- ═══════════════════════════════════════
+       NAV
+  ═══════════════════════════════════════ -->
+  <nav id="nav" class="fixed top-5 left-1/2 z-50 nav-glass rounded-full px-5 py-2.5 flex items-center gap-6 -translate-x-1/2 opacity-0" style="transform: translate(-50%, -18px);">
+    <a href="#hero" class="font-serif font-bold text-lg tracking-tight leading-none cursor-pointer">Bao.</a>
+    <div class="hidden md:flex items-center gap-5">
+      <a href="#about"   class="text-sm text-white/55 hover:text-white transition-colors duration-200 cursor-pointer">About</a>
+      <a href="#work"    class="text-sm text-white/55 hover:text-white transition-colors duration-200 cursor-pointer">Work</a>
+      <a href="#skills"  class="text-sm text-white/55 hover:text-white transition-colors duration-200 cursor-pointer">Skills</a>
+      <a href="#contact" class="text-sm text-white/55 hover:text-white transition-colors duration-200 cursor-pointer">Contact</a>
+    </div>
+    <a href="#contact" class="btn btn-red !py-2 !px-5 text-sm cursor-pointer">Hire Me</a>
+  </nav>
+
+  <!-- ═══════════════════════════════════════
+       HERO
+  ═══════════════════════════════════════ -->
+  <section id="hero" class="relative min-h-screen flex flex-col items-center justify-center overflow-hidden grid-bg">
+
+    <!-- Radial glow -->
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 70% 60% at 60% 50%, rgba(232,75,42,0.11) 0%, transparent 70%);"></div>
+
+    <!-- Floating orb -->
+    <div class="orb absolute right-[-5%] top-[15%] w-[480px] h-[480px] rounded-full pointer-events-none hidden lg:block"
+         style="background: radial-gradient(circle at 40% 40%, rgba(232,75,42,0.18) 0%, rgba(232,75,42,0.04) 60%, transparent 100%); filter: blur(50px);"></div>
+
+    <!-- Watermark -->
+    <div id="hero-wm" class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+      <span class="wm" style="font-size: clamp(120px, 22vw, 320px);">BAO</span>
+    </div>
+
+    <!-- Hero content -->
+    <div class="relative z-10 text-center px-6 max-w-5xl mx-auto pt-24 pb-32">
+
+      <div id="h-tag" class="rv badge inline-block mb-8">
+        Robotics &amp; AI Engineer &nbsp;·&nbsp; RMIT Vietnam &nbsp;·&nbsp; VinRobotics
+      </div>
+
+      <h1 id="h-title" class="rv font-sans font-bold leading-[0.88] tracking-tight mb-8" style="font-size: clamp(56px, 10vw, 130px);">
+        <span class="block">Engineering</span>
+        <span class="block">Tomorrow's</span>
+        <span class="block font-serif italic gt" style="font-size: clamp(60px, 11vw, 140px);">Machines.</span>
+      </h1>
+
+      <p id="h-sub" class="rv text-white/45 leading-relaxed mx-auto mb-12 max-w-lg" style="font-size: clamp(15px, 1.6vw, 18px);">
+        Robotics engineer &amp; AI researcher building intelligent systems at the intersection
+        of machine learning and physical robotics — currently at VinRobotics Foundation AI.
+      </p>
+
+      <div id="h-cta" class="rv flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#work" class="btn btn-red cursor-pointer">
+          View My Work
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+        <a href="#contact" class="btn btn-ghost cursor-pointer">Let's Collaborate</a>
+      </div>
+    </div>
+
+    <!-- Scroll cue -->
+    <div id="h-scroll" class="rv absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
+      <span class="sec-label" style="font-size:0.62rem;">Scroll</span>
+      <div class="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center pt-1.5">
+        <div class="w-1 h-1 rounded-full bg-accent scroll-dot"></div>
+      </div>
+    </div>
+
+    <!-- Stats strip -->
+    <div class="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-8 md:gap-16 px-6 py-5 border-t border-white/[0.06]">
+      <div class="text-center">
+        <div class="font-serif text-2xl md:text-3xl font-bold stat-num" data-target="3">0</div>
+        <div class="sec-label mt-0.5">Years Study</div>
+      </div>
+      <div class="w-px h-7 bg-white/10"></div>
+      <div class="text-center">
+        <div class="font-serif text-2xl md:text-3xl font-bold stat-num" data-target="12">0</div>
+        <div class="sec-label mt-0.5">Projects</div>
+      </div>
+      <div class="w-px h-7 bg-white/10"></div>
+      <div class="text-center">
+        <div class="font-serif text-2xl md:text-3xl font-bold stat-num" data-target="8">0</div>
+        <div class="sec-label mt-0.5">Tech Stacks</div>
+      </div>
+      <div class="w-px h-7 bg-white/10"></div>
+      <div class="text-center">
+        <div class="font-serif text-2xl md:text-3xl font-bold stat-num" data-target="1">0</div>
+        <div class="sec-label mt-0.5">AI Internship</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       MARQUEE
+  ═══════════════════════════════════════ -->
+  <div class="py-4 border-y border-white/[0.06] overflow-hidden bg-surface select-none">
+    <div class="marquee-inner font-mono text-xs text-white/25 tracking-widest uppercase">
+      <span>Robotics</span><span class="text-accent">✦</span>
+      <span>Machine Learning</span><span class="text-accent">✦</span>
+      <span>Computer Vision</span><span class="text-accent">✦</span>
+      <span>ROS2</span><span class="text-accent">✦</span>
+      <span>Foundation AI</span><span class="text-accent">✦</span>
+      <span>RMIT Vietnam</span><span class="text-accent">✦</span>
+      <span>VinRobotics</span><span class="text-accent">✦</span>
+      <span>Embedded Systems</span><span class="text-accent">✦</span>
+      <span>Mechatronics</span><span class="text-accent">✦</span>
+      <span>Autonomous Systems</span><span class="text-accent">✦</span>
+      <!-- duplicate for seamless loop -->
+      <span>Robotics</span><span class="text-accent">✦</span>
+      <span>Machine Learning</span><span class="text-accent">✦</span>
+      <span>Computer Vision</span><span class="text-accent">✦</span>
+      <span>ROS2</span><span class="text-accent">✦</span>
+      <span>Foundation AI</span><span class="text-accent">✦</span>
+      <span>RMIT Vietnam</span><span class="text-accent">✦</span>
+      <span>VinRobotics</span><span class="text-accent">✦</span>
+      <span>Embedded Systems</span><span class="text-accent">✦</span>
+      <span>Mechatronics</span><span class="text-accent">✦</span>
+      <span>Autonomous Systems</span><span class="text-accent">✦</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       ABOUT
+  ═══════════════════════════════════════ -->
+  <section id="about" class="relative py-28 md:py-36 px-6">
+    <div class="max-w-6xl mx-auto">
+
+      <!-- Label row -->
+      <div class="flex items-center gap-4 mb-14 rv">
+        <span class="sec-label">01 — About</span>
+        <div class="h-px flex-1 bg-white/[0.06]"></div>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+
+        <!-- Left -->
+        <div>
+          <h2 class="rv font-serif font-bold leading-[0.9] mb-8" style="font-size: clamp(40px, 5.5vw, 68px);">
+            Where Engineering<br/>Meets <span class="gt italic">Intelligence.</span>
+          </h2>
+
+          <p class="rv text-white/50 leading-[1.75] mb-5" style="font-size: clamp(15px, 1.5vw, 17px);">
+            I'm Bao — a third-year Robotics and Mechatronics Engineering student at RMIT
+            University Vietnam. I'm currently part of the <strong class="text-white/80 font-medium">Foundation AI team at VinRobotics</strong>,
+            where I develop intelligent algorithms that let machines understand and act in
+            the physical world.
+          </p>
+
+          <p class="rv text-white/50 leading-[1.75] mb-10" style="font-size: clamp(15px, 1.5vw, 17px);">
+            My work lives at the crossroads of mechanical design, embedded systems, and
+            deep learning. I don't just build robots — I build robots that <em class="italic text-white/70">think</em>.
+          </p>
+
+          <a href="#" class="rv btn btn-ghost inline-flex cursor-pointer">
+            Download CV
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </a>
+        </div>
+
+        <!-- Right -->
+        <div class="space-y-4 rv-r">
+
+          <!-- Current role -->
+          <div class="glass rounded-2xl p-6 cursor-pointer svc-card">
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <div>
+                <p class="font-semibold text-white">AI Research Intern</p>
+                <p class="text-white/45 text-sm mt-0.5">VinRobotics · Foundation AI Team</p>
+              </div>
+              <span class="badge shrink-0">Current</span>
+            </div>
+            <p class="text-white/40 text-sm leading-relaxed">
+              Developing generalist foundation models for robotic perception and control.
+              Bridging large-scale AI with real-world robotic actuation.
+            </p>
+          </div>
+
+          <!-- Education -->
+          <div class="glass rounded-2xl p-6 cursor-pointer svc-card">
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <div>
+                <p class="font-semibold text-white">Robotics &amp; Mechatronics Engineering</p>
+                <p class="text-white/45 text-sm mt-0.5">RMIT University Vietnam · Year 3</p>
+              </div>
+              <span class="font-mono text-xs text-white/25">2023–</span>
+            </div>
+            <p class="text-white/40 text-sm leading-relaxed">
+              Core focus: autonomous systems, control theory, embedded hardware, and
+              applied machine learning for physical environments.
+            </p>
+          </div>
+
+          <!-- Quote -->
+          <div class="rounded-2xl p-6" style="background: rgba(232,75,42,0.06); border: 1px solid rgba(232,75,42,0.18);">
+            <p class="font-serif text-xl italic text-white/75 leading-relaxed">
+              "The best robots aren't the fastest or strongest — they're the ones that
+              understand the world around them."
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       WORK
+  ═══════════════════════════════════════ -->
+  <section id="work" class="relative py-28 md:py-36 px-6 bg-surface">
+    <div class="max-w-6xl mx-auto">
+
+      <div class="flex items-center gap-4 mb-6 rv">
+        <span class="sec-label">02 — Work</span>
+        <div class="h-px flex-1 bg-white/[0.06]"></div>
+      </div>
+
+      <div class="flex items-end justify-between mb-14 rv">
+        <h2 class="font-serif font-bold leading-[0.9]" style="font-size: clamp(40px, 5.5vw, 68px);">
+          Selected<br/><span class="gt italic">Projects.</span>
+        </h2>
+        <a href="#" class="hidden md:block text-sm text-white/35 hover:text-white transition-colors cursor-pointer">All projects →</a>
+      </div>
+
+      <!-- Grid -->
+      <div class="grid md:grid-cols-2 gap-5">
+
+        <!-- Project 1 — tall -->
+        <div class="proj-card glass cursor-pointer md:row-span-1">
+          <div class="relative overflow-hidden" style="height: 300px;">
+            <div class="thumb absolute inset-0" style="background: linear-gradient(135deg, #200800 0%, #6B1800 50%, #E84B2A 100%);"></div>
+            <!-- Abstract circuit SVG decoration -->
+            <svg class="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="200" cy="150" r="80" stroke="white" stroke-width="0.5"/>
+              <circle cx="200" cy="150" r="50" stroke="white" stroke-width="0.5"/>
+              <circle cx="200" cy="150" r="120" stroke="white" stroke-width="0.3"/>
+              <line x1="80" y1="150" x2="320" y2="150" stroke="white" stroke-width="0.5"/>
+              <line x1="200" y1="30" x2="200" y2="270" stroke="white" stroke-width="0.5"/>
+              <circle cx="200" cy="150" r="6" fill="white" opacity="0.6"/>
+              <circle cx="280" cy="150" r="3" fill="#E84B2A" opacity="0.8"/>
+              <circle cx="120" cy="150" r="3" fill="#E84B2A" opacity="0.8"/>
+              <circle cx="200" cy="70" r="3" fill="#E84B2A" opacity="0.8"/>
+              <circle cx="200" cy="230" r="3" fill="#E84B2A" opacity="0.8"/>
+            </svg>
+            <div class="overlay absolute inset-0 rounded-t-2xl"></div>
+          </div>
+          <div class="p-6">
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="badge">AI / Deep Learning</span>
+              <span class="badge">ROS2</span>
+            </div>
+            <h3 class="font-serif font-bold text-2xl mb-2">Autonomous Navigation System</h3>
+            <p class="text-white/45 text-sm leading-relaxed mb-5">
+              Deep learning-based navigation module for mobile robots. Combines LiDAR, camera
+              fusion &amp; reinforcement learning for dynamic obstacle avoidance — achieving
+              sub-10cm precision at 20 Hz update rate.
+            </p>
+            <div class="flex items-center gap-3">
+              <a href="#" class="text-sm font-medium text-accent hover:text-accent-lit transition-colors cursor-pointer">View Project →</a>
+              <span class="text-white/15">|</span>
+              <a href="#" class="text-sm text-white/35 hover:text-white/70 transition-colors cursor-pointer">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="proj-card glass cursor-pointer">
+          <div class="relative overflow-hidden" style="height: 230px;">
+            <div class="thumb absolute inset-0" style="background: linear-gradient(135deg, #000B1E 0%, #001F5C 50%, #1A4DB8 100%);"></div>
+            <svg class="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 400 230" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="60" y="50" width="280" height="130" rx="8" stroke="white" stroke-width="0.5"/>
+              <rect x="80" y="70" width="80" height="90" rx="4" stroke="white" stroke-width="0.5"/>
+              <rect x="180" y="70" width="60" height="40" rx="4" stroke="white" stroke-width="0.5"/>
+              <rect x="260" y="70" width="60" height="90" rx="4" stroke="white" stroke-width="0.5"/>
+              <circle cx="110" cy="115" r="15" stroke="#4F8EF7" stroke-width="0.8" opacity="0.8"/>
+              <line x1="160" y1="115" x2="180" y2="115" stroke="white" stroke-width="0.5" opacity="0.5"/>
+              <line x1="240" y1="90" x2="260" y2="90" stroke="white" stroke-width="0.5" opacity="0.5"/>
+            </svg>
+            <div class="overlay absolute inset-0 rounded-t-2xl"></div>
+          </div>
+          <div class="p-6">
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="badge">Computer Vision</span>
+              <span class="badge">Python</span>
+              <span class="badge">YOLO</span>
+            </div>
+            <h3 class="font-serif font-bold text-xl mb-2">Robot Perception Pipeline</h3>
+            <p class="text-white/45 text-sm leading-relaxed mb-5">
+              Real-time 3D scene reconstruction for industrial robotic arms — 94% detection
+              accuracy at 30 FPS using a custom-trained detection model with depth fusion.
+            </p>
+            <div class="flex items-center gap-3">
+              <a href="#" class="text-sm font-medium text-accent hover:text-accent-lit transition-colors cursor-pointer">View Project →</a>
+              <span class="text-white/15">|</span>
+              <a href="#" class="text-sm text-white/35 hover:text-white/70 transition-colors cursor-pointer">GitHub</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="proj-card glass cursor-pointer">
+          <div class="relative overflow-hidden" style="height: 200px;">
+            <div class="thumb absolute inset-0" style="background: linear-gradient(135deg, #0A0800 0%, #2A2000 50%, #7A5800 100%);"></div>
+            <svg class="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 400 200" fill="none">
+              <path d="M200 50 L250 100 L200 150 L150 100 Z" stroke="white" stroke-width="0.5"/>
+              <path d="M200 30 L280 100 L200 170 L120 100 Z" stroke="white" stroke-width="0.3"/>
+              <circle cx="200" cy="100" r="8" fill="white" opacity="0.4"/>
+              <line x1="200" y1="50" x2="200" y2="30" stroke="#E84B2A" stroke-width="1" opacity="0.8"/>
+              <line x1="250" y1="100" x2="280" y2="100" stroke="#E84B2A" stroke-width="1" opacity="0.8"/>
+              <line x1="200" y1="150" x2="200" y2="170" stroke="#E84B2A" stroke-width="1" opacity="0.8"/>
+              <line x1="150" y1="100" x2="120" y2="100" stroke="#E84B2A" stroke-width="1" opacity="0.8"/>
+            </svg>
+            <div class="overlay absolute inset-0 rounded-t-2xl"></div>
+          </div>
+          <div class="p-6">
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="badge">Embedded</span>
+              <span class="badge">C++</span>
+              <span class="badge">Kinematics</span>
+            </div>
+            <h3 class="font-serif font-bold text-xl mb-2">6-DOF Robotic Arm Control</h3>
+            <p class="text-white/45 text-sm leading-relaxed mb-4">
+              Inverse kinematics solver &amp; real-time trajectory planner for a 6-DOF arm
+              with sub-millimetre end-effector precision.
+            </p>
+            <a href="#" class="text-sm font-medium text-accent hover:text-accent-lit transition-colors cursor-pointer">View Project →</a>
+          </div>
+        </div>
+
+        <!-- Project 4 -->
+        <div class="proj-card glass cursor-pointer">
+          <div class="relative overflow-hidden" style="height: 200px;">
+            <div class="thumb absolute inset-0" style="background: linear-gradient(135deg, #001508 0%, #003D18 50%, #006B2A 100%);"></div>
+            <svg class="absolute inset-0 w-full h-full opacity-10" viewBox="0 0 400 200" fill="none">
+              <path d="M100 100 Q150 50 200 100 Q250 150 300 100" stroke="white" stroke-width="0.8" fill="none"/>
+              <path d="M100 120 Q150 70 200 120 Q250 170 300 120" stroke="white" stroke-width="0.4" fill="none" opacity="0.5"/>
+              <circle cx="100" cy="100" r="4" fill="white" opacity="0.6"/>
+              <circle cx="200" cy="100" r="4" fill="#22C55E" opacity="0.8"/>
+              <circle cx="300" cy="100" r="4" fill="white" opacity="0.6"/>
+              <rect x="170" y="70" width="60" height="30" rx="4" stroke="white" stroke-width="0.5" opacity="0.5"/>
+            </svg>
+            <div class="overlay absolute inset-0 rounded-t-2xl"></div>
+          </div>
+          <div class="p-6">
+            <div class="flex flex-wrap gap-2 mb-3">
+              <span class="badge">Foundation AI</span>
+              <span class="badge">PyTorch</span>
+            </div>
+            <h3 class="font-serif font-bold text-xl mb-2">Foundation AI for Robotics</h3>
+            <p class="text-white/45 text-sm leading-relaxed mb-4">
+              Generalist AI models that adapt to diverse robotic tasks through few-shot learning —
+              developed at VinRobotics.
+            </p>
+            <a href="#" class="text-sm font-medium text-accent hover:text-accent-lit transition-colors cursor-pointer">View Project →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       SKILLS & SERVICES
+  ═══════════════════════════════════════ -->
+  <section id="skills" class="relative py-28 md:py-36 px-6">
+    <div class="max-w-6xl mx-auto">
+
+      <div class="flex items-center gap-4 mb-14 rv">
+        <span class="sec-label">03 — Skills &amp; Services</span>
+        <div class="h-px flex-1 bg-white/[0.06]"></div>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-16 lg:gap-24">
+
+        <!-- Skills -->
+        <div class="rv-l">
+          <h2 class="font-serif font-bold leading-[0.9] mb-12" style="font-size: clamp(36px, 4.5vw, 58px);">
+            Technical<br/><span class="gt italic">Expertise.</span>
+          </h2>
+
+          <div id="skill-list" class="space-y-7">
+
+            <div>
+              <div class="flex justify-between mb-2.5">
+                <span class="text-sm font-medium">Python · AI &amp; ML</span>
+                <span class="font-mono text-xs text-white/30">90%</span>
+              </div>
+              <div class="sk-track"><div class="sk-fill" data-w="0.90"></div></div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-2.5">
+                <span class="text-sm font-medium">ROS / ROS2</span>
+                <span class="font-mono text-xs text-white/30">85%</span>
+              </div>
+              <div class="sk-track"><div class="sk-fill" data-w="0.85"></div></div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-2.5">
+                <span class="text-sm font-medium">Computer Vision</span>
+                <span class="font-mono text-xs text-white/30">82%</span>
+              </div>
+              <div class="sk-track"><div class="sk-fill" data-w="0.82"></div></div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-2.5">
+                <span class="text-sm font-medium">C++ · Embedded Systems</span>
+                <span class="font-mono text-xs text-white/30">75%</span>
+              </div>
+              <div class="sk-track"><div class="sk-fill" data-w="0.75"></div></div>
+            </div>
+
+            <div>
+              <div class="flex justify-between mb-2.5">
+                <span class="text-sm font-medium">CAD · SolidWorks</span>
+                <span class="font-mono text-xs text-white/30">68%</span>
+              </div>
+              <div class="sk-track"><div class="sk-fill" data-w="0.68"></div></div>
+            </div>
+
+          </div>
+
+          <!-- Tech tags -->
+          <div class="flex flex-wrap gap-2 mt-10">
+            <span class="badge">PyTorch</span>
+            <span class="badge">TensorFlow</span>
+            <span class="badge">OpenCV</span>
+            <span class="badge">Gazebo</span>
+            <span class="badge">MATLAB</span>
+            <span class="badge">Arduino</span>
+            <span class="badge">Raspberry Pi</span>
+            <span class="badge">Docker</span>
+            <span class="badge">Git</span>
+            <span class="badge">Linux</span>
+          </div>
+        </div>
+
+        <!-- Services -->
+        <div class="rv-r">
+          <h2 class="font-serif font-bold leading-[0.9] mb-12" style="font-size: clamp(36px, 4.5vw, 58px);">
+            What I<br/><span class="gt italic">Offer.</span>
+          </h2>
+
+          <div class="space-y-4">
+
+            <div class="glass rounded-2xl p-6 cursor-pointer svc-card">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(232,75,42,0.12);">
+                  <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1.5">Robotics System Design</h4>
+                  <p class="text-white/45 text-sm leading-relaxed">End-to-end robotic architecture from mechanical design to control algorithms and software integration.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass rounded-2xl p-6 cursor-pointer svc-card">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(232,75,42,0.12);">
+                  <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1.5">AI &amp; Machine Learning</h4>
+                  <p class="text-white/45 text-sm leading-relaxed">Custom AI model development, computer vision pipelines, and ML integration for intelligent automation.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="glass rounded-2xl p-6 cursor-pointer svc-card">
+              <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(232,75,42,0.12);">
+                  <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </div>
+                <div>
+                  <h4 class="font-semibold mb-1.5">Embedded &amp; Hardware</h4>
+                  <p class="text-white/45 text-sm leading-relaxed">Low-level firmware, sensor integration, and real-time control on embedded platforms from Arduino to Raspberry Pi.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       CONTACT
+  ═══════════════════════════════════════ -->
+  <section id="contact" class="relative py-28 md:py-36 px-6 bg-surface overflow-hidden">
+
+    <!-- Watermark -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+      <span class="wm opacity-60" style="font-size: clamp(100px, 18vw, 240px);">HELLO</span>
+    </div>
+
+    <!-- Bottom glow -->
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none"
+         style="background: radial-gradient(ellipse at center bottom, rgba(232,75,42,0.07) 0%, transparent 70%);"></div>
+
+    <div class="max-w-4xl mx-auto relative z-10">
+
+      <div class="flex items-center gap-4 mb-14 rv">
+        <span class="sec-label">04 — Contact</span>
+        <div class="h-px flex-1 bg-white/[0.06]"></div>
+      </div>
+
+      <h2 class="rv font-serif font-bold leading-[0.85] mb-8" style="font-size: clamp(48px, 8vw, 100px);">
+        Let's Build<br/>Something<br/><span class="gt italic">Amazing.</span>
+      </h2>
+
+      <p class="rv text-white/45 leading-relaxed mb-14 max-w-lg" style="font-size: clamp(15px, 1.5vw, 18px);">
+        Robotics project, AI collaboration, or just a conversation about the future
+        of intelligent machines — I'm always open to connect.
+      </p>
+
+      <!-- Contact channels -->
+      <div class="rv grid md:grid-cols-3 gap-4 mb-12">
+
+        <a href="mailto:tdmbao2005@gmail.com" class="glass rounded-2xl p-5 cursor-pointer svc-card block">
+          <svg class="w-6 h-6 text-accent mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <p class="text-white/40 text-xs mb-1">Email</p>
+          <p class="text-sm font-medium break-all">tdmbao2005@gmail.com</p>
+        </a>
+
+        <a href="#" class="glass rounded-2xl p-5 cursor-pointer svc-card block">
+          <svg class="w-6 h-6 text-accent mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+          <p class="text-white/40 text-xs mb-1">LinkedIn</p>
+          <p class="text-sm font-medium">Connect with me</p>
+        </a>
+
+        <a href="#" class="glass rounded-2xl p-5 cursor-pointer svc-card block">
+          <svg class="w-6 h-6 text-accent mb-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+          <p class="text-white/40 text-xs mb-1">GitHub</p>
+          <p class="text-sm font-medium">View my code</p>
+        </a>
+
+      </div>
+
+      <!-- Form -->
+      <form class="rv glass rounded-2xl p-8 md:p-10" onsubmit="handleSubmit(event)">
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label for="f-name" class="block text-xs text-white/40 mb-2 font-mono uppercase tracking-wider">Name</label>
+            <input type="text" id="f-name" placeholder="Your name" class="ci w-full rounded-xl px-4 py-3 text-sm font-sans" required />
+          </div>
+          <div>
+            <label for="f-email" class="block text-xs text-white/40 mb-2 font-mono uppercase tracking-wider">Email</label>
+            <input type="email" id="f-email" placeholder="your@email.com" class="ci w-full rounded-xl px-4 py-3 text-sm font-sans" required />
+          </div>
+        </div>
+        <div class="mb-4">
+          <label for="f-subject" class="block text-xs text-white/40 mb-2 font-mono uppercase tracking-wider">Subject</label>
+          <input type="text" id="f-subject" placeholder="What's this about?" class="ci w-full rounded-xl px-4 py-3 text-sm font-sans" />
+        </div>
+        <div class="mb-7">
+          <label for="f-msg" class="block text-xs text-white/40 mb-2 font-mono uppercase tracking-wider">Message</label>
+          <textarea id="f-msg" rows="4" placeholder="Tell me about your project or idea..." class="ci w-full rounded-xl px-4 py-3 text-sm font-sans resize-none" required></textarea>
+        </div>
+        <button type="submit" id="submit-btn" class="btn btn-red w-full justify-center cursor-pointer">
+          <span id="btn-text">Send Message</span>
+          <svg id="btn-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+        </button>
+      </form>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════ -->
+  <footer class="py-8 px-6 border-t border-white/[0.06]">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <span class="font-serif font-bold text-xl">Bao.</span>
+      <p class="text-white/25 text-sm font-mono">© 2026 Bao · Robotics &amp; AI Engineer · RMIT Vietnam</p>
+      <div class="flex items-center gap-5">
+        <a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors cursor-pointer">LinkedIn</a>
+        <a href="#" class="text-sm text-white/30 hover:text-white/70 transition-colors cursor-pointer">GitHub</a>
+        <a href="mailto:tdmbao2005@gmail.com" class="text-sm text-white/30 hover:text-white/70 transition-colors cursor-pointer">Email</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══════════════════════════════════════
+       SCRIPTS
+  ═══════════════════════════════════════ -->
+  <script>
+  (function () {
+    'use strict';
+
+    /* ── Helpers ── */
+    const isMobile = () => window.innerWidth <= 768 || !window.matchMedia('(pointer:fine)').matches;
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ── Custom Cursor ── */
+    (function () {
+      if (isMobile() || prefersReduced) return;
+      const dot  = document.getElementById('cur-dot');
+      const ring = document.getElementById('cur-ring');
+      let mx = 0, my = 0, rx = 0, ry = 0;
+
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        dot.style.left = mx + 'px';
+        dot.style.top  = my + 'px';
+      });
+
+      (function tick() {
+        rx += (mx - rx) * 0.11;
+        ry += (my - ry) * 0.11;
+        ring.style.left = rx + 'px';
+        ring.style.top  = ry + 'px';
+        requestAnimationFrame(tick);
+      })();
+
+      document.querySelectorAll('a, button, [class*="cursor-pointer"], .proj-card, .svc-card').forEach(el => {
+        el.addEventListener('mouseenter', () => { dot.classList.add('grow'); ring.classList.add('grow'); });
+        el.addEventListener('mouseleave', () => { dot.classList.remove('grow'); ring.classList.remove('grow'); });
+      });
+    })();
+
+    /* ── Scroll Progress Bar ── */
+    const prog = document.getElementById('prog');
+    function updateProgress() {
+      const scrolled = window.scrollY;
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      prog.style.width = (scrolled / total * 100).toFixed(2) + '%';
+    }
+    window.addEventListener('scroll', updateProgress, { passive: true });
+
+    /* ── Counter animation ── */
+    function animateCounter(el, target, suffix) {
+      if (prefersReduced) { el.textContent = target + suffix; return; }
+      const duration = 1800;
+      const start = performance.now();
+      function step(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.floor(eased * target) + (progress === 1 ? suffix : '');
+        if (progress < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    /* ── Smooth scroll on nav links ── */
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    /* ── Form submit ── */
+    window.handleSubmit = function (e) {
+      e.preventDefault();
+      const btn  = document.getElementById('submit-btn');
+      const text = document.getElementById('btn-text');
+      const icon = document.getElementById('btn-icon');
+      btn.disabled = true;
+      btn.style.opacity = '0.7';
+      text.textContent  = 'Sending…';
+      icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v8m0 0l-3-3m3 3l3-3"/>';
+      setTimeout(() => {
+        text.textContent = 'Message Sent!';
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>';
+        btn.style.background = '#16a34a';
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.style.opacity = '1';
+          btn.style.background = '';
+          text.textContent = 'Send Message';
+          icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>';
+          e.target.reset();
+        }, 3000);
+      }, 1400);
+    };
+
+    /* ── GSAP Animations ── */
+    function initGSAP() {
+      if (typeof gsap === 'undefined') {
+        // Fallback: reveal everything immediately
+        document.querySelectorAll('.rv, .rv-l, .rv-r').forEach(el => {
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        });
+        // Start counters
+        document.querySelectorAll('.stat-num').forEach(el => {
+          const target = parseInt(el.dataset.target);
+          const suffix = target === 12 ? '+' : '';
+          animateCounter(el, target, suffix);
+        });
+        return;
+      }
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      /* ── Nav entrance ── */
+      if (!prefersReduced) {
+        gsap.to('#nav', {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          delay: 0.6,
+          ease: 'power3.out',
+        });
+      } else {
+        document.getElementById('nav').style.opacity = '1';
+        document.getElementById('nav').style.transform = 'translate(-50%, 0)';
+      }
+
+      /* ── Hero sequence ── */
+      if (!prefersReduced) {
+        const heroTl = gsap.timeline({ delay: 0.9 });
+        heroTl
+          .to('#h-tag',    { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' })
+          .to('#h-title',  { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' }, '-=0.35')
+          .to('#h-sub',    { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.55')
+          .to('#h-cta',    { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, '-=0.45')
+          .to('#h-scroll', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, '-=0.4');
+      } else {
+        ['h-tag','h-title','h-sub','h-cta','h-scroll'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) { el.style.opacity='1'; el.style.transform='none'; }
+        });
+      }
+
+      /* ── Counters on hero enter ── */
+      ScrollTrigger.create({
+        trigger: '#hero',
+        start: 'top 80%',
+        once: true,
+        onEnter: () => {
+          document.querySelectorAll('.stat-num').forEach(el => {
+            const target = parseInt(el.dataset.target);
+            animateCounter(el, target, target === 12 ? '+' : '');
+          });
+        }
+      });
+      // Also fire immediately if hero is already in view on load
+      setTimeout(() => {
+        const hero = document.getElementById('hero');
+        if (hero && hero.getBoundingClientRect().top < window.innerHeight) {
+          document.querySelectorAll('.stat-num').forEach(el => {
+            const target = parseInt(el.dataset.target);
+            animateCounter(el, target, target === 12 ? '+' : '');
+          });
+        }
+      }, 1500);
+
+      /* ── Watermark parallax ── */
+      if (!prefersReduced) {
+        gsap.to('#hero-wm', {
+          y: -150,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: '#hero',
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1.5,
+          }
+        });
+      }
+
+      /* ── Generic scroll reveals (.rv, .rv-l, .rv-r) ── */
+      const heroIds = new Set(['h-tag','h-title','h-sub','h-cta','h-scroll']);
+
+      function revealEl(el, fromProps, delay = 0) {
+        if (!prefersReduced) {
+          gsap.fromTo(el,
+            fromProps,
+            { opacity: 1, x: 0, y: 0, duration: 0.8, delay, ease: 'power3.out',
+              scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+            }
+          );
+        } else {
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        }
+      }
+
+      document.querySelectorAll('.rv').forEach(el => {
+        if (heroIds.has(el.id)) return;
+        revealEl(el, { opacity: 0, y: 36 });
+      });
+      document.querySelectorAll('.rv-l').forEach(el => revealEl(el, { opacity: 0, x: -36 }));
+      document.querySelectorAll('.rv-r').forEach(el => revealEl(el, { opacity: 0, x: 36 }));
+
+      /* ── Project cards stagger ── */
+      gsap.utils.toArray('.proj-card').forEach((card, i) => {
+        if (prefersReduced) { card.style.opacity = '1'; card.style.transform = 'none'; return; }
+        gsap.fromTo(card,
+          { opacity: 0, y: 50 },
+          {
+            opacity: 1, y: 0, duration: 0.8,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 88%',
+              toggleActions: 'play none none none',
+            },
+            delay: (i % 2) * 0.12,
+          }
+        );
+      });
+
+      /* ── Skill bars ── */
+      ScrollTrigger.create({
+        trigger: '#skill-list',
+        start: 'top 80%',
+        once: true,
+        onEnter: () => {
+          document.querySelectorAll('.sk-fill').forEach((bar, i) => {
+            const w = parseFloat(bar.dataset.w);
+            if (prefersReduced) {
+              bar.style.transform = `scaleX(${w})`;
+            } else {
+              gsap.to(bar, {
+                scaleX: w,
+                duration: 1.3,
+                delay: i * 0.14,
+                ease: 'power3.out',
+              });
+            }
+          });
+        }
+      });
+    }
+
+    // Run after page load to ensure GSAP CDN is ready
+    if (document.readyState === 'complete') {
+      initGSAP();
+    } else {
+      window.addEventListener('load', initGSAP);
+    }
+
+  })();
+  </script>
+
+</body>
+</html>
