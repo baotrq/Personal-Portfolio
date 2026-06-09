@@ -1,0 +1,130 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Dark palette mapped to shadcn HSL vars */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 96%;
+    --card: 0 0% 7%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 14 79% 55%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 9%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 0 0% 96%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 11%;
+    --input: 0 0% 11%;
+    --ring: 14 79% 55%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground font-sans antialiased; }
+  ::selection { background: #E84B2A; color: white; }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: #0A0A0A; }
+::-webkit-scrollbar-thumb { background: #E84B2A; border-radius: 3px; }
+
+/* Grain overlay */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.45;
+}
+
+/* Gradient accent text utility */
+.gt {
+  background: linear-gradient(120deg, #E84B2A 0%, #F26845 45%, #FAB08A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Watermark text */
+.wm {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.055);
+  user-select: none;
+  pointer-events: none;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Glass surface */
+.glass {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Grid background */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(232,75,42,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,75,42,0.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+/* Marquee */
+.marquee-track { display: flex; gap: 3rem; animation: marquee 22s linear infinite; white-space: nowrap; }
+.marquee-track:hover { animation-play-state: paused; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* Scroll dot */
+.scroll-dot { animation: scrollDot 2.2s ease infinite; }
+@keyframes scrollDot { 0%,100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(8px); opacity: 0.3; } }
+
+/* Floating orb */
+.orb-float { animation: orbFloat 7s ease-in-out infinite; }
+@keyframes orbFloat { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(14px,-18px) scale(1.04); } }
+
+/* Cursor */
+@media (pointer: fine) { * { cursor: none !important; } }
+.cur-dot, .cur-ring {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  transform: translate(-50%,-50%);
+}
+.cur-dot {
+  width: 8px; height: 8px;
+  background: #E84B2A;
+  transition: transform 0.15s ease, background 0.2s;
+}
+.cur-ring {
+  width: 38px; height: 38px;
+  border: 1.5px solid rgba(232,75,42,0.5);
+  transition: width 0.25s ease, height 0.25s ease, border-color 0.25s;
+}
+.cur-dot.grow  { transform: translate(-50%,-50%) scale(4); background: rgba(232,75,42,0.25); }
+.cur-ring.grow { width: 60px; height: 60px; border-color: rgba(232,75,42,0.2); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  .marquee-track { animation: none; }
+}
