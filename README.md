@@ -2,7 +2,7 @@
 
 Personal portfolio site for Bao, a Robotics & AI Engineer at RMIT University Vietnam and VinRobotics Foundation AI.
 
-Live at: (https://baotrq.github.io/Personal-Portfolio/)
+Live at: https://baotrq.github.io/Personal-Portfolio/
 
 ## Stack
 
