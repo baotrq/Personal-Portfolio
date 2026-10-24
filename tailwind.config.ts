@@ -22,6 +22,11 @@ const config: Config = {
           mid: "#F26845",
           lit: "#F4906B",
         },
+        // Award / trophy highlight
+        gold: {
+          DEFAULT: "#F5B544",
+          lit: "#FFD27A",
+        },
         dark: "#0A0A0A",
         surface: "#111111",
         "surf-2": "#181818",

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowUpRight, Github } from "lucide-react";
+import { ArrowUpRight, Github, Trophy } from "lucide-react";
 import ProjectMedia from "@/components/ui/ProjectMedia";
 import type { Project } from "@/data/projects";
 
@@ -44,7 +44,15 @@ export default function ProjectCard({ project: p, onOpen, size = "md", delay = 0
           className="absolute inset-0 pointer-events-none"
           style={{ background: "linear-gradient(to top, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.25) 45%, transparent 75%)" }}
         />
-        {headline && (
+        {p.award ? (
+          <div className="absolute top-3 left-3 flex items-center gap-2 rounded-full pl-1 pr-3 py-1 bg-black/65 backdrop-blur-md border border-gold/45 shadow-[0_0_28px_rgba(245,181,68,0.28)]">
+            <span className="w-6 h-6 rounded-full bg-gradient-to-br from-gold-lit to-gold flex items-center justify-center">
+              <Trophy className="w-3.5 h-3.5 text-black/80" />
+            </span>
+            <span className="font-serif font-bold text-sm text-gold-lit">{p.award.place}</span>
+            <span className="font-mono text-[0.6rem] tracking-[0.12em] uppercase text-white/60 hidden sm:inline">{p.award.event}</span>
+          </div>
+        ) : headline && (
           <div className="absolute top-3 left-3 flex items-baseline gap-1.5 rounded-full bg-black/55 backdrop-blur-md border border-white/10 px-3 py-1">
             <span className="font-serif font-bold text-sm text-white">{headline.value}</span>
             <span className="font-mono text-[0.6rem] tracking-[0.12em] uppercase text-white/50">{headline.label}</span>

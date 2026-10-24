@@ -34,6 +34,8 @@ export interface Project {
   gradient: string;
   monogram: string;
   links: { live?: string; code?: string; codeLabel?: string };
+  /** Competition result, shown as a trophy badge on cards and a banner in the modal. */
+  award?: { place: string; title: string; event: string };
   note?: string;
   featured?: boolean;
 }
@@ -54,7 +56,7 @@ export const projects: Project[] = [
       "Team-wide: fall and freezing-of-gait models run INT8 on Silicon Labs EFR32xG26 wrist MCUs, 1.23× faster with the MVP accelerator.",
     ],
     stats: [
-      { value: "1st RU", label: "FPT IoT 2026" },
+      { value: "2nd", label: "place · FPT IoT 2026" },
       { value: "8", label: "pill cups" },
       { value: "6", label: "boards" },
       { value: "4", label: "team members" },
@@ -63,6 +65,7 @@ export const projects: Project[] = [
     year: "May – Sep 2026",
     role: "Dispenser hardware & firmware, fall dataset, kiosk UI",
     status: "First Runner-Up · FPT IoT Challenge 2026",
+    award: { place: "2nd place", title: "First Runner-Up", event: "FPT IoT Challenge 2026" },
     cover: { kind: "image", src: asset("pillars-cover.jpg"), alt: "The P-Station at the Grand Final: a two-layer pill dispenser with a tablet kiosk on top" },
     media: [
       { kind: "video", src: asset("pillars-station.mp4"), poster: asset("pillars-station.jpg"), alt: "The P-Station in its lit display case at the venue" },
@@ -92,7 +95,7 @@ export const projects: Project[] = [
       "Team-wide: an on-device sound model hears a bottle break, and an OpenThread border router on a Pi ties the shelf together.",
     ],
     stats: [
-      { value: "2nd", label: "FPT IoT 2025" },
+      { value: "2nd", label: "place · FPT IoT 2025" },
       { value: "260→64", label: "embedding" },
       { value: "10.4 KB", label: "first model" },
       { value: "4", label: "EFR32 boards" },
@@ -101,6 +104,7 @@ export const projects: Project[] = [
     year: "May – Sep 2025",
     role: "On-device recommendation model",
     status: "Second Prize · FPT IoT Challenge 2025",
+    award: { place: "2nd place", title: "Second Prize", event: "FPT IoT Challenge 2025" },
     cover: {
       kind: "image",
       src: asset("scent-cover.jpg"),
@@ -266,7 +270,7 @@ export const projects: Project[] = [
       "Stress-testing showed the Pi 4 running out of RAM, so the AI moved into the app and the dispenser only turns motors.",
     ],
     stats: [
-      { value: "1st RU", label: "NEO League S2" },
+      { value: "2nd", label: "place · NEO League" },
       { value: "< 1.5 s", label: "face switch" },
       { value: "1", label: "pill per drop" },
       { value: "4", label: "team members" },
@@ -275,6 +279,7 @@ export const projects: Project[] = [
     year: "May 2026",
     role: "Web dashboard & app flow",
     status: "First Runner-Up · NEO League Season 2",
+    award: { place: "2nd place", title: "First Runner-Up", event: "NEO League Season 2" },
     cover: { kind: "image", src: asset("ecyce-cover.jpg"), alt: "Ecyce MediLink: the web dashboard's health overview and the phone sign-up screen" },
     media: [
       { kind: "image", src: asset("ecyce-cover.jpg"), alt: "The web dashboard's health overview next to the phone sign-up screen" },

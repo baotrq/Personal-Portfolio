@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowUpRight, Github, ChevronLeft, ChevronRight } from "lucide-react";
+import { X, ArrowUpRight, Github, ChevronLeft, ChevronRight, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ProjectMedia from "@/components/ui/ProjectMedia";
 import type { Project } from "@/data/projects";
@@ -149,6 +149,24 @@ export default function ProjectModal({ project, list, onSelect, onClose }: Proje
 
               {/* Content */}
               <div className="px-6 md:px-9 pt-7 pb-8">
+                {project.award && (
+                  <div
+                    className="flex items-center gap-4 rounded-2xl px-5 py-4 mb-6 border border-gold/30"
+                    style={{ background: "linear-gradient(120deg, rgba(245,181,68,0.16) 0%, rgba(245,181,68,0.03) 70%)" }}
+                  >
+                    <span className="w-11 h-11 rounded-full bg-gradient-to-br from-gold-lit to-gold flex items-center justify-center shrink-0 shadow-[0_0_24px_rgba(245,181,68,0.35)]">
+                      <Trophy className="w-5 h-5 text-black/80" />
+                    </span>
+                    <div>
+                      <p className="font-serif font-bold text-xl md:text-2xl text-gold-lit leading-tight">
+                        {project.award.place}
+                        <span className="text-white/70 font-normal italic"> · {project.award.title}</span>
+                      </p>
+                      <p className="font-mono text-[0.66rem] tracking-[0.14em] uppercase text-white/50 mt-1">{project.award.event}</p>
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex flex-wrap gap-2 mb-4">
                   {project.tags.map((tag) => (
                     <span key={tag} className="tag">{tag}</span>

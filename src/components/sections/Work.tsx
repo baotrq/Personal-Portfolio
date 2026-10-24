@@ -39,8 +39,8 @@ export default function Work() {
               <span className="gt italic">Projects.</span>
             </h2>
             <p className="text-white/40 text-sm leading-relaxed max-w-sm md:text-right">
-              Two FPT IoT Challenge prizes for edge-AI hardware, and apps people actually use —
-              including a photobooth with 10,000+ users.
+              2nd place at the FPT IoT Challenge in 2025 and 2026 for edge-AI hardware, and apps
+              people actually use — including a photobooth with 10,000+ users.
             </p>
           </motion.div>
 

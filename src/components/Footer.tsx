@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Trophy } from "lucide-react";
 import { featuredProjects, projects } from "@/data/projects";
 
 const EMAIL = "tdmbao2005@gmail.com";
@@ -51,7 +51,11 @@ export default function Footer() {
                         <span className="block font-serif font-bold text-white/85 group-hover:text-white transition-colors">
                           {p.title}
                         </span>
-                        {stat && (
+                        {p.award ? (
+                          <span className="flex items-center gap-1.5 font-mono text-[0.62rem] tracking-[0.12em] uppercase text-gold mt-0.5 truncate">
+                            <Trophy className="w-3 h-3 shrink-0" /> {p.award.place} · {p.award.event}
+                          </span>
+                        ) : stat && (
                           <span className="block font-mono text-[0.62rem] tracking-[0.12em] uppercase text-white/30 mt-0.5 truncate">
                             {stat.value} · {stat.label}
                           </span>
