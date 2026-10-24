@@ -4,8 +4,8 @@ import { Cpu, Smartphone, Radio } from "lucide-react";
 const toolkit = [
   {
     group: "Hardware & Firmware",
-    items: ["ESP32 / C3", "C / C++", "PlatformIO", "Arduino", "Raspberry Pi", "Load cells · HX711", "Bluetooth LE", "KiCad"],
-    usedIn: "Egg Gripper · Clawd Mochi · SimpMusic LED",
+    items: ["ESP32 / C3", "C / C++", "PlatformIO", "Raspberry Pi", "Silicon Labs EFR32", "Load cells · HX711", "Bluetooth LE", "Thread · MQTT", "KiCad"],
+    usedIn: "P.I.L.L.A.R.S · Egg Gripper · S.C.E.N.T · Clawd Mochi",
   },
   {
     group: "Design & Fabrication",
@@ -23,9 +23,9 @@ const toolkit = [
     usedIn: "ONBOOTH · LomoStudio · Roll",
   },
   {
-    group: "AI & Vision",
-    items: ["Python", "PyTorch", "Computer vision", "MediaPipe", "Gemini API", "Local LLMs · Ollama", "MATLAB"],
-    usedIn: "ONBOOTH · Roll · coursework",
+    group: "Edge AI & Vision",
+    items: ["Python", "TensorFlow · Keras", "TFLite Micro · INT8", "PyTorch", "Computer vision", "MediaPipe", "OCR + LLMs", "MATLAB"],
+    usedIn: "S.C.E.N.T · P.I.L.L.A.R.S · Ecyce · ONBOOTH",
   },
 ];
 
