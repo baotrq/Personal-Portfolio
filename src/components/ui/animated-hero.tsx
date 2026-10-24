@@ -2,12 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { projects } from "@/data/projects";
 
 function Hero() {
   const [titleNumber, setTitleNumber] = useState(0);
 
   const titles = useMemo(
-    () => ["Robots.", "AI Systems.", "Machines.", "Solutions.", "Future."],
+    () => ["Move.", "Ship.", "Think.", "Matter."],
     []
   );
 
@@ -19,10 +20,10 @@ function Hero() {
   }, [titleNumber, titles]);
 
   const stats = [
-    { value: 3,  label: "Years Study",  suffix: "" },
-    { value: 12, label: "Projects",     suffix: "+" },
-    { value: 8,  label: "Tech Stacks",  suffix: "" },
-    { value: 1,  label: "AI Internship",suffix: "" },
+    { value: 10,              label: "ONBOOTH users", suffix: "k+" },
+    { value: 97,              label: "Gripper demo",  suffix: "/100" },
+    { value: projects.length, label: "Projects",      suffix: "" },
+    { value: 5,               label: "Platforms",     suffix: "" },
   ];
 
   return (
@@ -67,8 +68,8 @@ function Hero() {
           transition={{ duration: 0.7, delay: 0.4, ease: [0.4, 0, 0.2, 1] }}
           className="mb-8"
         >
-          <span className="inline-block font-mono text-[0.68rem] tracking-[0.14em] uppercase text-accent bg-accent/10 border border-accent/22 rounded-full px-3 py-1">
-            Robotics &amp; AI Engineer&nbsp;&nbsp;·&nbsp;&nbsp;RMIT Vietnam&nbsp;&nbsp;·&nbsp;&nbsp;VinRobotics
+          <span className="inline-block whitespace-nowrap font-mono text-[0.62rem] sm:text-[0.68rem] tracking-[0.08em] sm:tracking-[0.14em] uppercase text-accent bg-accent/10 border border-accent/22 rounded-full px-3 py-1">
+            Robotics &amp; Mechatronics&nbsp;&nbsp;·&nbsp;&nbsp;RMIT Vietnam
           </span>
         </motion.div>
 
@@ -80,8 +81,8 @@ function Hero() {
           className="font-sans font-bold leading-[0.88] tracking-tight mb-8"
           style={{ fontSize: "clamp(52px, 10vw, 128px)" }}
         >
-          <span className="block">Engineering</span>
-          <span className="block">Tomorrow's</span>
+          <span className="block">Building</span>
+          <span className="block">Things That</span>
 
           {/* Animated cycling word */}
           <span
@@ -118,9 +119,8 @@ function Hero() {
           className="text-white/45 leading-relaxed mx-auto mb-12 max-w-lg"
           style={{ fontSize: "clamp(15px, 1.6vw, 18px)" }}
         >
-          Robotics engineer &amp; AI researcher building intelligent systems at the
-          intersection of machine learning and physical robotics — currently at
-          VinRobotics Foundation AI.
+          I'm Bảo — a mechatronics engineer who builds the whole stack: CAD and
+          firmware for machines that move, and apps that 10,000+ people actually use.
         </motion.p>
 
         {/* CTAs */}
@@ -141,34 +141,19 @@ function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.8 }}
-        className="absolute bottom-24 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
-      >
-        <span className="font-mono text-[0.62rem] tracking-[0.16em] uppercase text-white/30">
-          Scroll
-        </span>
-        <div className="w-5 h-8 rounded-full border border-white/20 flex items-start justify-center pt-1.5">
-          <div className="w-1 h-1 rounded-full bg-accent scroll-dot" />
-        </div>
-      </motion.div>
 
       {/* Stats strip */}
-      <div className="absolute bottom-0 left-0 right-0 flex items-center justify-center gap-8 md:gap-16 px-6 py-5 border-t border-white/[0.06]">
-        {stats.map((s, i) => (
-          <div key={i} className="flex items-center gap-8 md:gap-16">
-            {i > 0 && <div className="w-px h-7 bg-white/10" />}
-            <div className="text-center">
+      <div className="absolute bottom-0 left-0 right-0 border-t border-white/[0.06] bg-dark/30 backdrop-blur-sm">
+        <div className="max-w-4xl mx-auto grid grid-cols-4 divide-x divide-white/[0.08] py-4 md:py-5">
+          {stats.map((s) => (
+            <div key={s.label} className="text-center px-2">
               <Counter target={s.value} suffix={s.suffix} />
-              <div className="font-mono text-[0.62rem] tracking-[0.16em] uppercase text-white/30 mt-0.5">
+              <div className="font-mono text-[0.55rem] md:text-[0.62rem] tracking-[0.12em] md:tracking-[0.16em] uppercase text-white/30 mt-1">
                 {s.label}
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -193,9 +178,9 @@ function Counter({ target, suffix }: { target: number; suffix: string }) {
   }, [target]);
 
   return (
-    <div className="font-serif text-2xl md:text-3xl font-bold">
+    <div className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tabular-nums">
       {count}
-      {suffix}
+      <span className="text-accent-lit/80 text-[0.7em]">{suffix}</span>
     </div>
   );
 }

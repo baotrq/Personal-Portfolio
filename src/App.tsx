@@ -1,4 +1,5 @@
-import { Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route, useLocation } from "react-router-dom";
 import ProgressBar from "@/components/ProgressBar";
 import Cursor from "@/components/Cursor";
 import Nav from "@/components/Nav";
@@ -27,6 +28,26 @@ function MainPage() {
   );
 }
 
+/** Scrolls to `#section` hashes (also when arriving from another route) and to the top on page changes. */
+function ScrollManager() {
+  const { pathname, hash, key } = useLocation();
+
+  useEffect(() => {
+    if (!hash) {
+      // "instant" overrides the html's scroll-smooth so a new page doesn't glide up from the bottom.
+      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+      return;
+    }
+    // Wait a frame so a freshly mounted page has rendered its sections.
+    const id = requestAnimationFrame(() => {
+      document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth" });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [pathname, hash, key]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <div className="bg-dark text-white overflow-x-hidden">
@@ -36,6 +57,7 @@ export default function App() {
       </div>
       <ProgressBar />
       <Cursor />
+      <ScrollManager />
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/projects" element={<AllProjects />} />

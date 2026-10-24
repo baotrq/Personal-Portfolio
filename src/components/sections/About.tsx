@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Download } from "lucide-react";
+import { Github, MoveRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const fadeUp = {
@@ -15,6 +15,13 @@ const fadeRight = {
   viewport: { once: true, margin: "-80px" },
   transition: { duration: 0.7, ease: [0.4, 0, 0.2, 1] as const },
 };
+
+const OFF_CLOCK = [
+  { icon: "🏀", text: "On the basketball court" },
+  { icon: "🖨️", text: "Calibrating 3D printers" },
+  { icon: "🤖", text: "Tinkering with local AI agents" },
+  { icon: "🐈‍⬛", text: "Raising a chaotic black kitten" },
+];
 
 export default function About() {
   return (
@@ -44,25 +51,33 @@ export default function About() {
             </motion.h2>
 
             <motion.p {...fadeUp} className="text-white/50 leading-[1.75] mb-5" style={{ fontSize: "clamp(15px, 1.5vw, 17px)" }}>
-              I'm Bao — a third-year Robotics and Mechatronics Engineering
-              student at RMIT University Vietnam. I'm currently part of the{" "}
+              I'm Bảo — a Robotics and Mechatronics Engineering (Honours)
+              student at RMIT University Vietnam. I work where hardware meets
+              software:{" "}
               <strong className="text-white/80 font-medium">
-                Foundation AI team at VinRobotics
+                edge AI, embedded systems and computer vision
               </strong>
-              , where I develop intelligent algorithms that let machines
-              understand and act in the physical world.
+              , bringing intelligence directly into the physical world.
             </motion.p>
 
             <motion.p {...fadeUp} className="text-white/50 leading-[1.75] mb-10" style={{ fontSize: "clamp(15px, 1.5vw, 17px)" }}>
-              My work lives at the crossroads of mechanical design, embedded
-              systems, and deep learning. I don't just build robots — I build
-              robots that{" "}
-              <em className="italic text-white/70">think</em>.
+              On team projects I'm usually the hardware/software architect —
+              CAD, electronics, firmware and the dashboard. On my own, I ship
+              products end to end, and I care most about the details people{" "}
+              <em className="italic text-white/70">feel</em>: a countdown that
+              lands on every phone at once, a grip that never cracks the egg.
             </motion.p>
 
-            <motion.div {...fadeUp}>
-              <Button variant="outline" className="gap-2">
-                <Download className="w-4 h-4" /> Download CV
+            <motion.div {...fadeUp} className="flex flex-wrap gap-3">
+              <Button className="gap-2" asChild>
+                <a href="#work">
+                  See my work <MoveRight className="w-4 h-4" />
+                </a>
+              </Button>
+              <Button variant="outline" className="gap-2" asChild>
+                <a href="https://github.com/baotrq" target="_blank" rel="noreferrer">
+                  <Github className="w-4 h-4" /> github.com/baotrq
+                </a>
               </Button>
             </motion.div>
           </div>
@@ -95,28 +110,37 @@ export default function About() {
             >
               <div className="flex items-start justify-between gap-4 mb-3">
                 <div>
-                  <p className="font-semibold text-white">Robotics &amp; Mechatronics Engineering</p>
-                  <p className="text-white/45 text-sm mt-0.5">RMIT University Vietnam · Year 3</p>
+                  <p className="font-semibold text-white">Robotics &amp; Mechatronics Engineering (Honours)</p>
+                  <p className="text-white/45 text-sm mt-0.5">RMIT University Vietnam</p>
                 </div>
-                <span className="font-mono text-xs text-white/25">2023–</span>
+                <span className="font-mono text-xs text-white/25 shrink-0">2023 – now</span>
               </div>
               <p className="text-white/40 text-sm leading-relaxed">
-                Core focus: autonomous systems, control theory, embedded
-                hardware, and applied machine learning for physical environments.
+                Control, embedded hardware, mechanical design and applied machine
+                learning. Team lead and hardware/software architect on group
+                projects — most recently a force-controlled egg gripper that
+                scored 97/100 on its demo.
               </p>
             </motion.div>
 
-            {/* Quote */}
+            {/* Off the clock */}
             <motion.div
               {...fadeRight}
               transition={{ ...fadeRight.transition, delay: 0.2 }}
               className="rounded-2xl p-6"
               style={{ background: "rgba(232,75,42,0.06)", border: "1px solid rgba(232,75,42,0.18)" }}
             >
-              <p className="font-serif text-xl italic text-white/75 leading-relaxed">
-                "The best robots aren't the fastest or strongest — they're the
-                ones that understand the world around them."
+              <p className="font-mono text-[0.68rem] tracking-[0.16em] uppercase text-accent-lit/80 mb-4">
+                Off the clock
               </p>
+              <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm text-white/65">
+                {OFF_CLOCK.map((item) => (
+                  <li key={item.text} className="flex items-center gap-3">
+                    <span className="text-lg leading-none" aria-hidden>{item.icon}</span>
+                    {item.text}
+                  </li>
+                ))}
+              </ul>
             </motion.div>
           </div>
         </div>

@@ -134,7 +134,7 @@ All scroll-triggered reveals use `whileInView` with `viewport={{ once: true, mar
 
 **Staggered children:** Add `delay: i * 0.1` (or `0.14` for skill bars).
 
-**Hero H1:** `duration: 0.9, delay: 0.6`; badge at `delay: 0.4`; body at `delay: 0.9`; CTAs at `delay: 1.05`; scroll indicator at `delay: 1.5`.
+**Hero H1:** `duration: 0.9, delay: 0.6`; badge at `delay: 0.4`; body at `delay: 0.9`; CTAs at `delay: 1.05`. The stats strip marks the fold (no scroll indicator).
 
 ### Hover States
 - Cards: `whileHover={{ y: -6, boxShadow: "0 32px 60px rgba(0,0,0,0.6)" }}` (Work cards)
@@ -144,8 +144,8 @@ All scroll-triggered reveals use `whileInView` with `viewport={{ once: true, mar
 ### Cycling Word (Hero)
 Spring: `stiffness: 55, damping: 14`. Words slide in from `y: "100%"` and exit to `y: "-120%"`. Interval: 2200ms.
 
-### Skill Bars
-`scaleX` from `0` to level value, `transformOrigin: left`, `duration: 1.3`, staggered `delay: i * 0.14`. Triggered by `useInView`.
+### Toolkit rows (Skills)
+Grouped chips instead of percentage bars; each group lists the projects that used it. Rows fade up with `delay: i * 0.06`.
 
 ### Counter (Hero stats)
 Cubic-ease-out counting animation over 1800ms using `requestAnimationFrame`.
@@ -154,7 +154,7 @@ Cubic-ease-out counting animation over 1800ms using `requestAnimationFrame`.
 
 ## Navigation
 
-Fixed floating pill, centered, `top: 5`. Transitions from `bg-dark/70 backdrop-blur-xl` to `bg-dark/85 backdrop-blur-2xl border-white/10 shadow-lg` after `scrollY > 40`.
+Fixed floating pill, centered by a full-width flex wrapper, `top: 5`. Active section gets an accent dot (IntersectionObserver); below `md` a menu button opens a dropdown panel. Transitions from `bg-dark/70 backdrop-blur-xl` to `bg-dark/85 backdrop-blur-2xl border-white/10 shadow-lg` after `scrollY > 40`.
 
 ---
 
@@ -187,8 +187,9 @@ Width: 3px. Track: `#0A0A0A`. Thumb: `#E84B2A`, `border-radius: 3px`.
 | Nav | `Nav.tsx` | Pill, scroll-aware |
 | Marquee | `Marquee.tsx` | 22s loop, pauses on hover |
 | About | `sections/About.tsx` | 2-col: bio left, cards right |
-| Work | `sections/Work.tsx` | 2-col project card grid |
-| Skills | `sections/Skills.tsx` | 2-col: bars left, services right |
+| Work | `sections/Work.tsx` | 2-col featured project grid |
+| Project card / modal / media | `ui/ProjectCard.tsx`, `ui/ProjectModal.tsx`, `ui/ProjectMedia.tsx` | Data from `data/projects.ts` |
+| Skills | `sections/Skills.tsx` | 2-col: toolkit left, services right |
 | Contact | `sections/Contact.tsx` | Channels + form |
 | Footer | `Footer.tsx` | Minimal strip |
 | Cursor | `Cursor.tsx` | Custom pointer |

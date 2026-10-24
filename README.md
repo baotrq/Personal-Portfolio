@@ -1,6 +1,6 @@
 # Bao — Personal Portfolio
 
-Personal portfolio site for Bao, a Robotics & AI Engineer at RMIT University Vietnam and VinRobotics Foundation AI.
+Personal portfolio site for Bảo Trương, a Robotics & Mechatronics engineer at RMIT University Vietnam.
 
 Live at: https://baotrq.github.io/Personal-Portfolio/
 
@@ -18,8 +18,9 @@ Live at: https://baotrq.github.io/Personal-Portfolio/
 - Atmospheric WebGL smoke background that drifts as you scroll
 - Animated cycling hero headline
 - Scroll-reveal section animations
-- Project card modal (center overlay)
-- All Projects page
+- Real project cards with images and looping video, backed by `src/data/projects.ts`
+- Project modal with media switcher, stats, highlights and ←/→ navigation
+- All Projects page with Hardware / Mobile / Web filters
 - Custom cursor, scroll progress bar, horizontal marquee
 - Fully responsive
 
@@ -37,6 +38,7 @@ npm run dev
 ```bash
 npm run build    # production build
 npm run preview  # preview build locally
+npm run deploy   # publish to GitHub Pages (gh-pages branch)
 ```
 
 ## Project Structure
@@ -48,14 +50,20 @@ src/
     ui/
       spooky-smoke-animation.tsx   # WebGL2 smoke renderer
       animated-hero.tsx            # Hero section
-      ProjectModal.tsx             # Centered project detail modal
+      ProjectCard.tsx              # Project card
+      ProjectModal.tsx             # Project detail modal
+      ProjectMedia.tsx             # Image / video / fallback
     sections/
       About.tsx
       Work.tsx
       Skills.tsx
       Contact.tsx
+  data/
+    projects.ts                    # All project content
   pages/
-    AllProjects.tsx                # /projects placeholder page
+    AllProjects.tsx                # /projects filterable grid
+public/
+  projects/                        # Project images and videos
 ```
 
 ## License

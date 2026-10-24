@@ -1,26 +1,34 @@
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import ProjectCard from "@/components/ui/ProjectCard";
+import ProjectModal from "@/components/ui/ProjectModal";
+import { projects, projectKinds, type Project, type ProjectKind } from "@/data/projects";
 
-const placeholderProjects = [
-  { title: "Autonomous Navigation System", tags: ["AI / Deep Learning", "ROS2"],         year: "2024" },
-  { title: "Robot Perception Pipeline",    tags: ["Computer Vision", "Python", "YOLO"],  year: "2024" },
-  { title: "6-DOF Robotic Arm Control",    tags: ["Embedded", "C++", "Kinematics"],      year: "2023" },
-  { title: "Foundation AI for Robotics",   tags: ["Foundation AI", "PyTorch"],           year: "2025" },
-  { title: "Project Five",                 tags: ["Coming Soon"],                         year: "—"    },
-  { title: "Project Six",                  tags: ["Coming Soon"],                         year: "—"    },
-  { title: "Project Seven",                tags: ["Coming Soon"],                         year: "—"    },
-  { title: "Project Eight",                tags: ["Coming Soon"],                         year: "—"    },
-];
+type Filter = "All" | ProjectKind;
 
 export default function AllProjects() {
+  const [filter, setFilter] = useState<Filter>("All");
+  const [activeProject, setActiveProject] = useState<Project | null>(null);
+
+  const visible = useMemo(
+    () => (filter === "All" ? projects : projects.filter((p) => p.kind === filter)),
+    [filter]
+  );
+
+  const filters: { label: Filter; count: number }[] = [
+    { label: "All", count: projects.length },
+    ...projectKinds.map((k) => ({ label: k, count: projects.filter((p) => p.kind === k).length })),
+  ];
+
   return (
-    <div className="min-h-screen bg-dark text-white">
+    <div className="relative z-10 min-h-screen text-white">
       <Nav />
 
-      <main className="max-w-6xl mx-auto px-6 pt-40 pb-28">
+      <main className="max-w-6xl mx-auto px-6 pt-36 md:pt-40 pb-28">
 
         {/* Back */}
         <motion.div
@@ -42,80 +50,96 @@ export default function AllProjects() {
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.4, 0, 0.2, 1] }}
-          className="mb-6"
+          className="flex items-center gap-4 mb-6"
         >
           <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-white/30">
-            All Work
+            All Work · {projects.length} projects
           </span>
+          <div className="h-px flex-1 bg-white/[0.06]" />
         </motion.div>
 
         <motion.h1
           initial={{ opacity: 0, y: 32 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
-          className="font-serif font-bold leading-[0.9] mb-20"
+          className="font-serif font-bold leading-[0.9] mb-12"
           style={{ fontSize: "clamp(52px, 8vw, 96px)" }}
         >
           Every<br />
           <span className="gt italic">Project.</span>
         </motion.h1>
 
-        {/* Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {placeholderProjects.map((p, i) => (
-            <motion.div
-              key={p.title}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 + i * 0.07, ease: [0.4, 0, 0.2, 1] }}
-              className="glass rounded-2xl p-6 hover:border-accent/30 hover:-translate-y-1 transition-all duration-250 cursor-pointer"
-            >
-              {/* Placeholder thumbnail */}
-              <div
-                className="w-full h-2 rounded-full mb-6"
-                style={{
-                  background: p.tags[0] === "Coming Soon"
-                    ? "rgba(255,255,255,0.06)"
-                    : "linear-gradient(90deg, #E84B2A, #F4906B)",
-                  opacity: p.tags[0] === "Coming Soon" ? 1 : 0.6,
-                }}
-              />
-
-              <div className="flex flex-wrap gap-2 mb-3">
-                {p.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="font-mono text-[0.68rem] tracking-[0.14em] uppercase text-accent bg-accent/10 border border-accent/22 rounded-full px-2.5 py-0.5"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <h3
-                className="font-serif font-bold text-lg mb-2 leading-snug"
-                style={{ color: p.tags[0] === "Coming Soon" ? "rgba(255,255,255,0.2)" : undefined }}
-              >
-                {p.title}
-              </h3>
-
-              <p className="font-mono text-[0.68rem] text-white/25 mt-auto">{p.year}</p>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Placeholder notice */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.9 }}
-          className="text-center text-white/20 font-mono text-xs tracking-widest uppercase mt-20"
+        {/* Filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.25, ease: [0.4, 0, 0.2, 1] }}
+          className="flex flex-wrap gap-2 mb-10"
+          role="tablist"
+          aria-label="Filter projects"
         >
-          More projects coming soon
-        </motion.p>
+          {filters.map((f) => {
+            const active = f.label === filter;
+            return (
+              <button
+                key={f.label}
+                role="tab"
+                aria-selected={active}
+                onClick={() => setFilter(f.label)}
+                className={`relative rounded-full px-4 py-2 text-sm transition-colors ${
+                  active ? "text-white" : "text-white/45 hover:text-white/80"
+                }`}
+              >
+                {active && (
+                  <motion.span
+                    layoutId="filter-pill"
+                    className="absolute inset-0 rounded-full bg-accent/15 border border-accent/40"
+                    transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                  />
+                )}
+                <span className="relative">
+                  {f.label} <span className="font-mono text-[0.7rem] text-white/30 ml-0.5">{f.count}</span>
+                </span>
+              </button>
+            );
+          })}
+        </motion.div>
+
+        {/* Grid */}
+        <motion.div layout className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <AnimatePresence mode="popLayout">
+            {visible.map((p, i) => (
+              <motion.div
+                key={p.slug}
+                layout
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+                className="flex"
+              >
+                <ProjectCard project={p} size="sm" delay={0.05 * i} onOpen={setActiveProject} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+
+        <p className="text-center text-white/25 text-sm mt-20">
+          More on{" "}
+          <a href="https://github.com/baotrq" target="_blank" rel="noreferrer" className="text-white/50 hover:text-accent transition-colors underline underline-offset-4 decoration-white/15">
+            github.com/baotrq
+          </a>
+        </p>
       </main>
 
       <Footer />
+
+      <ProjectModal
+        project={activeProject}
+        list={visible}
+        onSelect={setActiveProject}
+        onClose={() => setActiveProject(null)}
+      />
     </div>
   );
 }

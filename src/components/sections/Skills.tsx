@@ -1,42 +1,53 @@
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import { Cpu, Brain, Wrench } from "lucide-react";
+import { motion } from "framer-motion";
+import { Cpu, Smartphone, Radio } from "lucide-react";
 
-const skills = [
-  { name: "Python · AI & ML",        level: 0.90 },
-  { name: "ROS / ROS2",              level: 0.85 },
-  { name: "Computer Vision",         level: 0.82 },
-  { name: "C++ · Embedded Systems",  level: 0.75 },
-  { name: "CAD · SolidWorks",        level: 0.68 },
-];
-
-const tags = [
-  "PyTorch", "TensorFlow", "OpenCV", "Gazebo",
-  "MATLAB", "Arduino", "Raspberry Pi", "Docker", "Git", "Linux",
+const toolkit = [
+  {
+    group: "Hardware & Firmware",
+    items: ["ESP32 / C3", "C / C++", "PlatformIO", "Arduino", "Raspberry Pi", "Load cells · HX711", "Bluetooth LE", "KiCad"],
+    usedIn: "Egg Gripper · Clawd Mochi · SimpMusic LED",
+  },
+  {
+    group: "Design & Fabrication",
+    items: ["Fusion 360", "Shapr3D", "3D printing · Bambu Lab", "PETG / TPU"],
+    usedIn: "Egg Gripper · Clawd Mochi · LomoStudio",
+  },
+  {
+    group: "Mobile",
+    items: ["Kotlin", "Jetpack Compose", "Wear OS", "SwiftUI", "WidgetKit", "Flutter"],
+    usedIn: "Roll · Age in Motion · Loop Widget",
+  },
+  {
+    group: "Web & Real-time",
+    items: ["TypeScript", "Next.js", "React", "WebRTC · LiveKit", "three.js", "Supabase", "Cloudflare Workers"],
+    usedIn: "ONBOOTH · LomoStudio · Roll",
+  },
+  {
+    group: "AI & Vision",
+    items: ["Python", "PyTorch", "Computer vision", "MediaPipe", "Gemini API", "Local LLMs · Ollama", "MATLAB"],
+    usedIn: "ONBOOTH · Roll · coursework",
+  },
 ];
 
 const services = [
   {
     icon: Cpu,
-    title: "Robotics System Design",
-    desc: "End-to-end robotic architecture from mechanical design to control algorithms and software integration.",
+    title: "Mechatronic Systems",
+    desc: "From force budget to firmware: CAD, 3D-printed mechanisms, sensors and closed-loop control on ESP32 — like a gripper that holds a raw egg at 4 N.",
   },
   {
-    icon: Brain,
-    title: "AI & Machine Learning",
-    desc: "Custom AI model development, computer vision pipelines, and ML integration for intelligent automation.",
+    icon: Smartphone,
+    title: "Mobile Apps & Widgets",
+    desc: "Native Android, Wear OS and iOS apps with offline-first sync — and home-screen widgets that do things widgets aren't supposed to.",
   },
   {
-    icon: Wrench,
-    title: "Embedded & Hardware",
-    desc: "Low-level firmware, sensor integration, and real-time control on embedded platforms from Arduino to RPi.",
+    icon: Radio,
+    title: "Real-time Web Products",
+    desc: "Multi-device experiences over WebRTC that stay in sync on home Wi-Fi and 4G, shipped bilingual and used by 10,000+ people.",
   },
 ];
 
 export default function Skills() {
-  const barsRef = useRef<HTMLDivElement>(null);
-  const barsInView = useInView(barsRef, { once: true, margin: "-100px" });
-
   return (
     <section id="skills" className="relative py-28 md:py-36 px-6">
       <div className="max-w-6xl mx-auto">
@@ -49,72 +60,54 @@ export default function Skills() {
           className="flex items-center gap-4 mb-14"
         >
           <span className="font-mono text-[0.7rem] tracking-[0.16em] uppercase text-white/30">
-            03 — Skills &amp; Services
+            03 — Skills
           </span>
           <div className="h-px flex-1 bg-white/[0.06]" />
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24">
+        <div className="grid lg:grid-cols-[1.15fr_1fr] gap-16 lg:gap-20">
 
-          {/* Left — skills */}
+          {/* Left — toolkit */}
           <div>
             <motion.h2
               initial={{ opacity: 0, x: -32 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-              className="font-serif font-bold leading-[0.9] mb-12"
+              className="font-serif font-bold leading-[0.9] mb-10"
               style={{ fontSize: "clamp(36px, 4.5vw, 58px)" }}
             >
-              Technical<br />
-              <span className="gt italic">Expertise.</span>
+              The<br />
+              <span className="gt italic">Toolkit.</span>
             </motion.h2>
 
-            <div ref={barsRef} className="space-y-7">
-              {skills.map((s, i) => (
-                <div key={s.name}>
-                  <div className="flex justify-between mb-2.5">
-                    <span className="text-sm font-medium">{s.name}</span>
-                    <span className="font-mono text-xs text-white/30">
-                      {Math.round(s.level * 100)}%
-                    </span>
+            <div className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
+              {toolkit.map((t, i) => (
+                <motion.div
+                  key={t.group}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ duration: 0.6, delay: i * 0.06, ease: [0.4, 0, 0.2, 1] }}
+                  className="group grid sm:grid-cols-[150px_1fr] gap-x-6 gap-y-3 py-5"
+                >
+                  <div>
+                    <p className="text-sm font-semibold text-white/85 group-hover:text-white transition-colors">{t.group}</p>
+                    <p className="font-mono text-[0.6rem] tracking-[0.08em] uppercase text-white/25 mt-1 leading-relaxed">{t.usedIn}</p>
                   </div>
-                  <div className="h-px bg-white/[0.08] rounded overflow-hidden">
-                    <motion.div
-                      className="h-full origin-left"
-                      style={{
-                        background: "linear-gradient(90deg, #E84B2A, #F4906B)",
-                        borderRadius: "2px",
-                      }}
-                      initial={{ scaleX: 0 }}
-                      animate={barsInView ? { scaleX: s.level } : { scaleX: 0 }}
-                      transition={{
-                        duration: 1.3,
-                        delay: i * 0.14,
-                        ease: [0.4, 0, 0.2, 1],
-                      }}
-                    />
+                  <div className="flex flex-wrap gap-1.5 content-start">
+                    {t.items.map((item) => (
+                      <span
+                        key={item}
+                        className="rounded-full border border-white/[0.09] bg-white/[0.03] px-2.5 py-1 text-xs text-white/60 group-hover:border-accent/25 group-hover:text-white/75 transition-colors"
+                      >
+                        {item}
+                      </span>
+                    ))}
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-              className="flex flex-wrap gap-2 mt-10"
-            >
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="font-mono text-[0.68rem] tracking-[0.14em] uppercase text-accent bg-accent/10 border border-accent/22 rounded-full px-2.5 py-0.5"
-                >
-                  {tag}
-                </span>
-              ))}
-            </motion.div>
           </div>
 
           {/* Right — services */}
@@ -124,11 +117,11 @@ export default function Skills() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-80px" }}
               transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
-              className="font-serif font-bold leading-[0.9] mb-12"
+              className="font-serif font-bold leading-[0.9] mb-10"
               style={{ fontSize: "clamp(36px, 4.5vw, 58px)" }}
             >
               What I<br />
-              <span className="gt italic">Offer.</span>
+              <span className="gt italic">Do.</span>
             </motion.h2>
 
             <div className="space-y-4">
@@ -140,13 +133,8 @@ export default function Skills() {
                     initial={{ opacity: 0, x: 32 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, margin: "-60px" }}
-                    transition={{
-                      duration: 0.7,
-                      delay: i * 0.1,
-                      ease: [0.4, 0, 0.2, 1],
-                    }}
-                    whileHover={{ y: -3, borderColor: "rgba(232,75,42,0.35)" }}
-                    className="glass rounded-2xl p-6 cursor-pointer transition-colors duration-200"
+                    transition={{ duration: 0.7, delay: i * 0.1, ease: [0.4, 0, 0.2, 1] }}
+                    className="glass rounded-2xl p-6 transition-[transform,border-color] duration-300 hover:-translate-y-1 hover:border-accent/30"
                   >
                     <div className="flex items-start gap-4">
                       <div

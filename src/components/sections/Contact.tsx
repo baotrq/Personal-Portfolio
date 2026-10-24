@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Linkedin, Github, Send, Check } from "lucide-react";
+import { Mail, Github, Send, Check, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const fade = (delay = 0) => ({
@@ -10,30 +10,27 @@ const fade = (delay = 0) => ({
   transition: { duration: 0.7, delay, ease: [0.4, 0, 0.2, 1] as const },
 });
 
+const EMAIL = "tdmbao2005@gmail.com";
+
 const channels = [
-  {
-    icon: Mail,
-    label: "Email",
-    value: "tdmbao2005@gmail.com",
-    href: "mailto:tdmbao2005@gmail.com",
-  },
-  { icon: Linkedin, label: "LinkedIn", value: "Connect with me", href: "#" },
-  { icon: Github,   label: "GitHub",   value: "View my code",   href: "#" },
+  { icon: Mail,   label: "Email",  value: EMAIL,                href: `mailto:${EMAIL}` },
+  { icon: Github, label: "GitHub", value: "github.com/baotrq",  href: "https://github.com/baotrq" },
 ];
 
 export default function Contact() {
   const [sent, setSent] = useState(false);
-  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  // No backend: the form composes an email in the visitor's mail app.
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSent(true);
-      setTimeout(() => setSent(false), 3500);
-      (e.target as HTMLFormElement).reset();
-    }, 1400);
+    const data = new FormData(e.currentTarget);
+    const name = String(data.get("name") ?? "").trim();
+    const from = String(data.get("email") ?? "").trim();
+    const subject = String(data.get("subject") ?? "").trim() || `Hello from ${name || "your portfolio"}`;
+    const body = `${String(data.get("message") ?? "").trim()}\n\n— ${name}${from ? ` (${from})` : ""}`;
+    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setSent(true);
+    setTimeout(() => setSent(false), 4000);
   }
 
   return (
@@ -71,7 +68,7 @@ export default function Contact() {
         >
           Let's Build<br />
           Something<br />
-          <span className="gt italic">Amazing.</span>
+          <span className="gt italic">Real.</span>
         </motion.h2>
 
         <motion.p
@@ -79,22 +76,26 @@ export default function Contact() {
           className="text-white/45 leading-relaxed mb-14 max-w-lg"
           style={{ fontSize: "clamp(15px, 1.5vw, 18px)" }}
         >
-          Robotics project, AI collaboration, or just a great conversation about
-          the future of intelligent machines — I'm always open to connect.
+          Internships, a hardware build, an app idea, or just a good conversation
+          about robots and products — my inbox is open.
         </motion.p>
 
         {/* Channels */}
-        <motion.div {...fade(0.15)} className="grid md:grid-cols-3 gap-4 mb-12">
+        <motion.div {...fade(0.15)} className="grid sm:grid-cols-2 gap-4 mb-12">
           {channels.map((ch) => {
             const Icon = ch.icon;
             return (
               <motion.a
                 key={ch.label}
                 href={ch.href}
+                {...(ch.href.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}
                 whileHover={{ y: -3, borderColor: "rgba(232,75,42,0.35)" }}
-                className="glass rounded-2xl p-5 block transition-colors duration-200"
+                className="group glass rounded-2xl p-5 block transition-colors duration-200"
               >
-                <Icon className="w-6 h-6 text-accent mb-4" />
+                <div className="flex items-start justify-between mb-4">
+                  <Icon className="w-6 h-6 text-accent" />
+                  <ArrowUpRight className="w-4 h-4 text-white/20 group-hover:text-accent transition-colors" />
+                </div>
                 <p className="text-white/40 text-xs mb-1">{ch.label}</p>
                 <p className="text-sm font-medium break-all">{ch.value}</p>
               </motion.a>
@@ -115,6 +116,7 @@ export default function Contact() {
               </label>
               <input
                 id="f-name"
+                name="name"
                 type="text"
                 placeholder="Your name"
                 required
@@ -127,6 +129,7 @@ export default function Contact() {
               </label>
               <input
                 id="f-email"
+                name="email"
                 type="email"
                 placeholder="your@email.com"
                 required
@@ -141,6 +144,7 @@ export default function Contact() {
             </label>
             <input
               id="f-subject"
+              name="subject"
               type="text"
               placeholder="What's this about?"
               className="w-full rounded-xl px-4 py-3 text-sm bg-white/[0.04] border border-white/[0.09] text-white placeholder-white/25 focus:outline-none focus:border-accent transition-colors"
@@ -153,6 +157,7 @@ export default function Contact() {
             </label>
             <textarea
               id="f-msg"
+              name="message"
               rows={4}
               placeholder="Tell me about your project or idea..."
               required
@@ -163,18 +168,18 @@ export default function Contact() {
           <Button
             type="submit"
             size="lg"
-            disabled={loading || sent}
             className="w-full justify-center gap-2"
-            style={sent ? { background: "#16a34a" } : undefined}
           >
             {sent ? (
-              <><Check className="w-4 h-4" /> Message Sent!</>
-            ) : loading ? (
-              "Sending…"
+              <><Check className="w-4 h-4" /> Draft opened in your email app</>
             ) : (
-              <><Send className="w-4 h-4" /> Send Message</>
+              <><Send className="w-4 h-4" /> Write the email</>
             )}
           </Button>
+          <p className="text-center text-xs text-white/30 mt-4">
+            Opens your email app with this message filled in — or write to{" "}
+            <a href={`mailto:${EMAIL}`} className="text-white/55 hover:text-accent transition-colors">{EMAIL}</a>.
+          </p>
         </motion.form>
       </div>
     </section>

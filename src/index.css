@@ -70,6 +70,20 @@ body::after {
   white-space: nowrap;
 }
 
+/* Mono pill tag */
+.tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #F4906B;
+  background: rgba(232,75,42,0.08);
+  border: 1px solid rgba(232,75,42,0.2);
+  border-radius: 9999px;
+  padding: 0.15rem 0.6rem;
+  white-space: nowrap;
+}
+
 /* Glass surface */
 .glass {
   background: rgba(255,255,255,0.03);
@@ -100,23 +114,29 @@ body::after {
 @keyframes orbFloat { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(14px,-18px) scale(1.04); } }
 
 /* Cursor */
-@media (pointer: fine) { * { cursor: none !important; } }
+@media (pointer: fine) {
+  *:not(input):not(textarea) { cursor: none !important; }
+  input, textarea { cursor: text !important; }
+}
+@media (pointer: coarse) { .cur-dot, .cur-ring { display: none; } }
 .cur-dot, .cur-ring {
   position: fixed;
   pointer-events: none;
   z-index: 9999;
   border-radius: 50%;
   transform: translate(-50%,-50%);
+  opacity: 0;
 }
+.cur-dot.on, .cur-ring.on { opacity: 1; }
 .cur-dot {
   width: 8px; height: 8px;
   background: #E84B2A;
-  transition: transform 0.15s ease, background 0.2s;
+  transition: transform 0.15s ease, background 0.2s, opacity 0.2s;
 }
 .cur-ring {
   width: 38px; height: 38px;
   border: 1.5px solid rgba(232,75,42,0.5);
-  transition: width 0.25s ease, height 0.25s ease, border-color 0.25s;
+  transition: width 0.25s ease, height 0.25s ease, border-color 0.25s, opacity 0.2s;
 }
 .cur-dot.grow  { transform: translate(-50%,-50%) scale(4); background: rgba(232,75,42,0.25); }
 .cur-ring.grow { width: 60px; height: 60px; border-color: rgba(232,75,42,0.2); }
