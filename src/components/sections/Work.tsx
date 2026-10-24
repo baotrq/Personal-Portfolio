@@ -39,8 +39,8 @@ export default function Work() {
               <span className="gt italic">Projects.</span>
             </h2>
             <p className="text-white/40 text-sm leading-relaxed max-w-sm md:text-right">
-              Things I've designed, built and shipped — from a gripper that holds a raw egg to a
-              photobooth used by 10,000+ people.
+              Two FPT IoT Challenge prizes for edge-AI hardware, and apps people actually use —
+              including a photobooth with 10,000+ users.
             </p>
           </motion.div>
 

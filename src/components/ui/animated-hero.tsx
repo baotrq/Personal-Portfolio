@@ -21,7 +21,7 @@ function Hero() {
 
   const stats = [
     { value: 10,              label: "ONBOOTH users", suffix: "k+" },
-    { value: 97,              label: "Gripper demo",  suffix: "/100" },
+    { value: 3,               label: "Awards",        suffix: "" },
     { value: projects.length, label: "Projects",      suffix: "" },
     { value: 5,               label: "Platforms",     suffix: "" },
   ];
