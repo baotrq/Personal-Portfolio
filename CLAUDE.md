@@ -53,7 +53,7 @@ src/
 
 **Glass cards:** Use the `.glass` utility class (`rgba(255,255,255,0.03)` bg, `rgba(255,255,255,0.07)` border, `backdrop-blur(12px)`). On hover: `hover:border-accent/30 hover:-translate-y-1`.
 
-**Projects:** Add or edit projects only in `src/data/projects.ts`. Media lives in `public/projects/` and is referenced via the `asset()` helper (respects the `/Personal-Portfolio/` base). Keep images ≤ ~250 KB JPGs; turn GIF footage into short muted H.264 MP4s (`.gitignore` allows `public/projects/*.mp4`). Facts and numbers come from the showcase repos on github.com/baotrq — keep them in sync.
+**Projects:** Add or edit projects only in `src/data/projects.ts`. Media lives in `public/media/` and is referenced via the `asset()` helper (respects the `/Personal-Portfolio/` base). Keep images ≤ ~250 KB JPGs; turn GIF footage into short muted H.264 MP4s (`.gitignore` allows `public/media/*.mp4`). Facts and numbers come from the showcase repos on github.com/baotrq — keep them in sync.
 
 **Tags:** Use the `.tag` utility class for mono pill tags.
 

@@ -1,7 +1,7 @@
 // Single source of truth for every project on the site (home grid, /projects, modal).
 // Facts and numbers come from the showcase repos on github.com/baotrq — keep them in sync.
 
-const asset = (file: string) => `${import.meta.env.BASE_URL}projects/${file}`;
+const asset = (file: string) => `${import.meta.env.BASE_URL}media/${file}`;
 
 export type Media = (
   | { kind: "image"; src: string; alt: string }

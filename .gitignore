@@ -4,7 +4,7 @@ dist/
 .env.local
 *.local
 *.mp4
-!public/projects/*.mp4
+!public/media/*.mp4
 *.webp
 graphify-out/
 .claude/

@@ -63,7 +63,7 @@ src/
   pages/
     AllProjects.tsx                # /projects filterable grid
 public/
-  projects/                        # Project images and videos
+  media/                           # Project images and videos
 ```
 
 ## License
